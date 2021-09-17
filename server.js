@@ -53,19 +53,126 @@ async function saving() {
 
 //this function for getting the data from google API
 function homeHandler(req,res) {
-  res.send('hello')
+  let getAdventure = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Adventure&keyes&key=${googleKey}&maxResults=10`
+  let getClassics = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Classics&keyes&key=${googleKey}&maxResults=10`
+  let getComics = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Comics&keyes&key=${googleKey}&maxResults=10`
+  let getMystery = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Mystery&keyes&key=${googleKey}&maxResults=10`
+  let getHistorical = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Historical&keyes&key=${googleKey}&maxResults=10`
+  let getHorror = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Horror&keyes&key=${googleKey}&maxResults=10`
+  let getLove = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Love&keyes&key=${googleKey}&maxResults=10`
+ let adventure ,classics,comics,mystery,historical,horror,Love;
+
+  axios
+  .get(getAdventure)
+  .then((results) => {
+    const bookArray = results.data.items
+    adventure = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+
+  })
+  .catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getClassics)
+  .then((results) => {
+    const bookArray = results.data.items
+    classics = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  })
+  .catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getComics)
+  .then((results) => {
+    const bookArray = results.data.items
+    comics = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  })
+  .catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getMystery)
+  .then((results) => {
+    const bookArray = results.data.items
+    mystery = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  }).catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getHistorical)
+  .then((results) => {
+    const bookArray = results.data.items
+    historical = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  }).catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getHorror)
+  .then((results) => {
+    const bookArray = results.data.items
+    horror = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  }).catch (err =>{
+    console.log('error');
+  })
+  axios
+  .get(getLove)
+  .then((results) => {
+    const bookArray = results.data.items
+    Love = bookArray.map((book) => {
+      return new GoogleBooks(book)
+    })
+  }).catch (err =>{
+    console.log('error');
+  })
+  setTimeout(() => {
+    let categories = {
+      "Adventure": adventure,
+      "Classics": classics,
+      "Comics": comics,
+      "Mystery":mystery,
+      "Historical":historical,
+      "Horror":horror,
+      "love":Love,
+     } 
     
+    console.log(categories);
+    res.send(categories)
+  }, 1000);
+  
+
 }
 
 //using google api 
-// 
+function GoogleBooks(book){
+  this.title = book.volumeInfo.title;
+  this.image= book.volumeInfo.imageLinks.thumbnail;
+  this.publishedDate= book.volumeInfo.publishedDate
+  this.description= book.volumeInfo.description;
+  this.auth= book.volumeInfo.authors;
+  this.status= book.volumeInfo.printType;
+  this.pages=book.volumeInfo.pageCount;
+  this.category =book.volumeInfo.categories;
+  this.infoLink= book.volumeInfo.infoLink
+}
 
 
 
 
 
 //Routes 
-server.get('/',homeHandler)
+server.get('/',homeHandler);
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
 

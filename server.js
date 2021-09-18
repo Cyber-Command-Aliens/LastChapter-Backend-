@@ -11,6 +11,8 @@ server.use(express.json());
 const googleKey = process.env.Google_key
 const PORT = process.env.PORT;
 
+const profile = require('./Profile');
+
 
 // Mongo Config
 const mongoose = require('mongoose');
@@ -173,6 +175,6 @@ function GoogleBooks(book){
 
 //Routes 
 server.get('/',homeHandler);
+server.get('/profile', profile.getProfileBooks);
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
-

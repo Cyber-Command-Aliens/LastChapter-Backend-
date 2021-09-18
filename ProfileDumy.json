@@ -1,0 +1,31 @@
+[
+    {
+        "title": "Harry Potter and the Prisoner of Azkaban",
+        "img": "http://prodimage.images-bn.com/pimages/9780439136365_p0_v1_s1200x630.jpg",
+        "description": "Harry Potter and the Prisoner of Azkaban is a fantasy novel written by British author J. K. Rowling and is the third in the Harry Potter series. The book follows Harry Potter, a young wizard, in his third year at Hogwarts School of Witchcraft and Wizardry.",
+        "status": "Available",
+        "email": "farouk9435@gmail.com",
+        "author": "J. K. Rowling",
+        "pages": "317"
+    },
+
+    {
+        "title": "Harry Potter and the Philosopher's Stone",
+        "img": "http://prodimage.images-bn.com/pimages/9780439136365_p0_v1_s1200x630.jpg",
+        "description": "Harry Potter and the Philosopher's Stone is a fantasy novel written by British author J. K. Rowling.",
+        "status": "Available",
+        "email": "farouk9435@gmail.com",
+        "author": "J. K. Rowling",
+        "pages": "223"
+    },
+
+    {
+        "title": "Harry Potter and the Deathly Hallows",
+        "img": "http://prodimage.images-bn.com/pimages/9780439136365_p0_v1_s1200x630.jpg",
+        "description": "Harry Potter and the Deathly Hallows is a fantasy novel written by British author J. K. Rowling and the seventh and final novel of the Harry Potter series. It was released on 21 July 2007 in the United Kingdom by Bloomsbury Publishing, in the United States by Scholastic, and in Canada by Raincoast Books",
+        "status": "Available",
+        "email": "farouk9435@gmail.com",
+        "author": "J. K. Rowling",
+        "pages": "607"
+    }
+]

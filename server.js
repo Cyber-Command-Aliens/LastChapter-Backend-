@@ -78,10 +78,22 @@ async function saving() {
     }
 
 
-
-//this function for getting the data from google API
+ 
 
 function homeHandler(req,res) {
+
+ 
+  bookcategories.find({'catgory'
+    :['Adventure','Classics','Mystery','Historical','Horror','Love','Comics']},(err,result) => {
+    if (err) {
+        console.log(err);
+    }
+    else{
+        
+        res.send(result)
+    }
+  })  
+
 
 
 //This fucntion used to get books api from the data base

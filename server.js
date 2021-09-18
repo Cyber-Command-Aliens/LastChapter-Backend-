@@ -30,6 +30,7 @@ async function main() {
     
   });
    LastChapter = mongoose.model('Books', LastChapterSchema);
+  //  LastChapter = mongoose.model('BookCategories', LastChapterSchema);
 //   saving()
 }
 
@@ -62,94 +63,17 @@ function homeHandler(req,res) {
   let getLove = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Love&keyes&key=${googleKey}&maxResults=10`
  let adventure ,classics,comics,mystery,historical,horror,Love;
 
-  axios
-  .get(getAdventure)
+axios
+  .get(`https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Adventure&keyes&key=${googleKey}&maxResults=10`)
   .then((results) => {
     const bookArray = results.data.items
-    adventure = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
+console.log(bookArray);
 
   })
   .catch (err =>{
     console.log('error');
   })
-  axios
-  .get(getClassics)
-  .then((results) => {
-    const bookArray = results.data.items
-    classics = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  })
-  .catch (err =>{
-    console.log('error');
-  })
-  axios
-  .get(getComics)
-  .then((results) => {
-    const bookArray = results.data.items
-    comics = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  })
-  .catch (err =>{
-    console.log('error');
-  })
-  axios
-  .get(getMystery)
-  .then((results) => {
-    const bookArray = results.data.items
-    mystery = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  }).catch (err =>{
-    console.log('error');
-  })
-  axios
-  .get(getHistorical)
-  .then((results) => {
-    const bookArray = results.data.items
-    historical = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  }).catch (err =>{
-    console.log('error');
-  })
-  axios
-  .get(getHorror)
-  .then((results) => {
-    const bookArray = results.data.items
-    horror = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  }).catch (err =>{
-    console.log('error');
-  })
-  axios
-  .get(getLove)
-  .then((results) => {
-    const bookArray = results.data.items
-    Love = bookArray.map((book) => {
-      return new GoogleBooks(book)
-    })
-  }).catch (err =>{
-    console.log('error');
-  })
-  setTimeout(() => {
-    let categories = {
-      "Adventure": adventure,
-      "Classics": classics,
-      "Comics": comics,
-      "Mystery":mystery,
-      "Historical":historical,
-      "Horror":horror,
-      "love":Love,
-     } 
-    
-    console.log(categories);
-    res.send(categories)
-  }, 1000);
+ 
   
 
 }

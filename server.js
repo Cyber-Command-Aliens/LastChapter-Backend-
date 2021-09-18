@@ -164,6 +164,14 @@ function homeHandler(req,res) {
 
 //Routes 
 server.get('/',homeHandler);
+// here is the the fav data
+server.post('/add',addToFavourite);
+async function addToFavourite(req,res) {
+ let favourite = req.body
+res.send(favourite)
+console.log(favourite);
+
+}
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
 

@@ -1,24 +1,24 @@
-'use strict';
-// required 
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+"use strict";
+// required
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 const server = express();
 server.use(cors());
 server.use(express.json());
-const { default: axios } = require('axios');
+const { default: axios } = require("axios");
 server.use(express.json());
-const googleKey = process.env.Google_key
+const googleKey = process.env.Google_key;
 const PORT = process.env.PORT;
 
-
 // Mongo Config
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-main().catch(err => console.log(err));
+main().catch((err) => console.log(err));
 let LastChapter;
 let bookcategories;
 let favBook;
+let post;
 async function main() {
   await mongoose.connect(process.env.MONGO_URL);
   const LastChapterSchema = new mongoose.Schema({
@@ -32,10 +32,19 @@ async function main() {
     catgory: String,
     infoLink: String,
   });
-  LastChapter = mongoose.model('Books', LastChapterSchema);
-  bookcategories = mongoose.model('bookcategories', LastChapterSchema);
-  favBook = mongoose.model('favBook', LastChapterSchema);
-
+  const PostSchema = new mongoose.Schema({
+    userName: String,
+    userImg: String,
+    book: Object,
+    title: String,
+    review: String,
+    likes: Number,
+    comments:Array,
+  });
+  LastChapter = mongoose.model("Books", LastChapterSchema);
+  bookcategories = mongoose.model("bookcategories", LastChapterSchema);
+  favBook = mongoose.model("favBook", LastChapterSchema);
+  post = mongoose.model("post", PostSchema);
 
   // saving()
 
@@ -53,7 +62,7 @@ function dleteItems() {
 
 }
 
-// used to add books  
+// used to add books
 async function saving() {
   const ramiBbooks = new LastChapter({
     title: 'test',
@@ -79,24 +88,39 @@ async function saving() {
   await TEST2.save();
 }
 
-
-
-
 function homeHandler(req, res) {
-
-
-  bookcategories.find({
-    'catgory'
-      : ['Adventure', 'Classics', 'Mystery', 'Historical', 'Horror', 'Love', 'Comics']
-  }, (err, result) => {
-    if (err) {
-      console.log(err);
+  bookcategories.find(
+    {
+      catgory: [
+        "Adventure",
+        "Classics",
+        "Mystery",
+        "Historical",
+        "Horror",
+        "Love",
+        "Comics",
+      ],
+    },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
     }
-    else {
+  );
 
-      res.send(result)
-    }
-  })
+  //This fucntion used to get books api from the data base
+  // ramizaitoun
+  //  function getbooksApi(){
+  //   let getAdventure = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Adventure&keyes&key=${googleKey}&maxResults=10`
+  //   let getClassics = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Classics&keyes&key=${googleKey}&maxResults=10`
+  //   let getComics = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Comics&keyes&key=${googleKey}&maxResults=10`
+  //   let getMystery = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Mystery&keyes&key=${googleKey}&maxResults=10`
+  //   let getHistorical = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Historical&keyes&key=${googleKey}&maxResults=10`
+  //   let getHorror = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Horror&keyes&key=${googleKey}&maxResults=10`
+  //   let getLove = `https://www.googleapis.com/books/v1/volumes?q=flowers+subject:Love&keyes&key=${googleKey}&maxResults=10`
+
 
 
 
@@ -148,9 +172,27 @@ function homeHandler(req, res) {
 
 
 
+  //       bookcategories.create({
+  //           title: item.title,
+  //           img: item.image,
+  //           description: item.description,
+  //           status: item.status,
+  //           author: item.auth[0],
+  //           pages: item.pages,
+  //           catgory: 'Love',
+  //           infoLink:item.infoLink
+
+  //       });
+
+  //     })
+  //     })
+  //     .catch (err =>{
+  //       console.log('error',err);
+  //     })
+  //  }
 }
 
-//using google api 
+//using google api
 // function GoogleBooks(book){
 //   this.title = book.volumeInfo.title;
 //   this.image= book.volumeInfo.imageLinks.thumbnail;
@@ -162,18 +204,21 @@ function homeHandler(req, res) {
 //   this.infoLink= book.volumeInfo.infoLink
 // }
 
-
-
-
-
-//Routes 
-server.get('/', homeHandler);
+//Routes
+server.get("/", homeHandler);
 // here is the the fav data
-server.post('/add', addToFavourite);
+server.post("/add", addToFavourite);
 // to delete a book
-server.delete('/delete/:id', deleteBook);
+server.delete("/delete/:id", deleteBook);
 // get the favBook
-server.get('/profile',getFav);
+server.get("/profile", getFav);
+//add Post
+server.post("/post", addPost);
+// render post
+server.get("/getposts", getPost);
+// delete post
+server.delete("/deletepost/:id", deletePost);
+
 async function addToFavourite(req, res) {
   //  let favourite = req.body
   // res.send(favourite)
@@ -199,45 +244,81 @@ async function addToFavourite(req, res) {
   favBook.find({ email: email }, (err, result) => {
     if (err) {
       console.log(err);
-    }
-    else {
+    } else {
       res.send(result);
     }
-  })
-
+  });
 }
 
 function deleteBook(req, res) {
   const bookId = req.params.id;
   const email = req.query.email;
   favBook.deleteOne({ _id: bookId }, (err, result) => {
-
     favBook.find({ email: email }, (err, result) => {
-          if (err) {
-              console.log(err);
-          }
-          else {
-              res.send(result);
-          }
-      })
-
-  })
-
-
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
+  });
 }
 
-function getFav (req, res){
+function getFav(req, res) {
   const email = req.query.email;
   favBook.find({ email: email }, (err, result) => {
     if (err) {
-        console.log(err);
+      console.log(err);
+    } else {
+      res.send(result);
     }
-    else {
-        res.send(result);
-    }
-})
+  });
+}
 
+async function addPost(req, res) {
+  // console.log(req.body);
+  let { userName, userImg, book, title, review } = req.body;
+  await post.create({
+    userName: userName,
+    userImg: userImg,
+    book: book,
+    title: title,
+    review: review,
+  });
+
+  post.find({}, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  });
+}
+
+async function getPost(req, res) {
+  post.find({}, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+}
+
+function deletePost(req, res) {
+  let postId = req.params.id;
+  console.log(postId);
+  post.deleteOne({ _id: postId }, (err, result) => {
+    post.find({}, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        
+        res.send(result);
+      }
+    });
+  });
 }
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
-

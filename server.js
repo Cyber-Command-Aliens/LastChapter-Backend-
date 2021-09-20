@@ -181,6 +181,8 @@ server.post("/post", addPost);
 server.get("/getposts", getPost);
 // delete post
 server.delete("/deletepost/:id", deletePost);
+// put likes
+server.put('/updatelikes/:id', updateLikesHandler)
 
 async function addToFavourite(req, res) {
   //  let favourite = req.body
@@ -240,13 +242,14 @@ function getFav(req, res) {
 
 async function addPost(req, res) {
   // console.log(req.body);
-  let { userName, userImg, book, title, review } = req.body;
+  let { userName, userImg, book, title, review, like } = req.body;
   await post.create({
     userName: userName,
     userImg: userImg,
     book: book,
     title: title,
     review: review,
+    likes : like
   });
 
   post.find({}, (err, result) => {
@@ -284,4 +287,19 @@ function deletePost(req, res) {
   });
 }
 
+function updateLikesHandler (req, res){
+let postId = req.params.id;
+let like = req.body.like;
+
+post.findByIdAndUpdate({_id:postId},{likes : like } , (err, result)=>{
+  post.find({}, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      
+      res.send(result);
+    }
+  });
+})
+}
 server.listen(PORT, () => console.log(`listening on ${PORT}`));

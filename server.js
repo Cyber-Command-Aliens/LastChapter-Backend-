@@ -220,6 +220,8 @@ server.get("/getposts", getPost);
 server.delete("/deletepost/:id", deletePost);
 // put likes
 server.put('/updatelikes/:id', updateLikesHandler)
+// put comment
+server.put('/updatecomments/:id', updateCommentsHandler)
 
 async function addToFavourite(req, res) {
   //  let favourite = req.body
@@ -293,7 +295,7 @@ async function addPost(req, res) {
     if (err) {
       console.log(err);
     } else {
-      console.log(result);
+      // console.log(result);
       res.send(result);
     }
   });
@@ -311,7 +313,7 @@ async function getPost(req, res) {
 
 function deletePost(req, res) {
   let postId = req.params.id;
-  console.log(postId);
+  // console.log(postId);
   post.deleteOne({ _id: postId }, (err, result) => {
     post.find({}, (err, result) => {
       if (err) {
@@ -339,4 +341,22 @@ post.findByIdAndUpdate({_id:postId},{likes : like } , (err, result)=>{
   });
 })
 }
+
+function updateCommentsHandler (req, res){
+  let postId = req.params.id;
+  let comment= req.body.comment;
+  console.log(postId, comment);
+
+  post.findByIdAndUpdate({_id:postId}, {comments: comment}, (err,result)=>{
+    post.find({}, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        
+        res.send(result);
+      }
+    }); 
+  })
+}
+
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
